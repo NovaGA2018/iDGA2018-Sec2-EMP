@@ -6,6 +6,6 @@
 
 AZoomyZoomGameMode::AZoomyZoomGameMode()
 {
-	DefaultPawnClass = AZoomyZoomPawn::StaticClass();
-	HUDClass = AZoomyZoomHud::StaticClass();
+	//DefaultPawnClass = AZoomyZoomPawn::StaticClass();
+	//HUDClass = AZoomyZoomHud::StaticClass();
 }

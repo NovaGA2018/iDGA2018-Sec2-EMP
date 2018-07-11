@@ -7,5 +7,5 @@ UZoomyZoomWheelFront::UZoomyZoomWheelFront()
 	ShapeRadius = 35.f;
 	ShapeWidth = 10.0f;
 	bAffectedByHandbrake = false;
-	SteerAngle = 50.f;
+	SteerAngle = 45.f;
 }
