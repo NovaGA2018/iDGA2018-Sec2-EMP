@@ -49,11 +49,11 @@ AZoomyZoomPawn::AZoomyZoomPawn()
 	Vehicle4W->WheelSetups[1].BoneName = FName("Wheel_Front_Right");
 	Vehicle4W->WheelSetups[1].AdditionalOffset = FVector(0.f, 12.f, 0.f);
 
-	Vehicle4W->WheelSetups[2].WheelClass = UZoomyZoomWheelRear::StaticClass();
+	Vehicle4W->WheelSetups[2].WheelClass = UZoomyZoomWheelFront::StaticClass();
 	Vehicle4W->WheelSetups[2].BoneName = FName("Wheel_Rear_Left");
 	Vehicle4W->WheelSetups[2].AdditionalOffset = FVector(0.f, -12.f, 0.f);
 
-	Vehicle4W->WheelSetups[3].WheelClass = UZoomyZoomWheelRear::StaticClass();
+	Vehicle4W->WheelSetups[3].WheelClass = UZoomyZoomWheelFront::StaticClass();
 	Vehicle4W->WheelSetups[3].BoneName = FName("Wheel_Rear_Right");
 	Vehicle4W->WheelSetups[3].AdditionalOffset = FVector(0.f, 12.f, 0.f);
 
@@ -116,6 +116,7 @@ AZoomyZoomPawn::AZoomyZoomPawn()
 	GearDisplayColor = FColor(255, 255, 255, 255);
 
 	bInReverseGear = false;
+	boostPickupAmount = 20;
 }
 
 void AZoomyZoomPawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -132,13 +133,18 @@ void AZoomyZoomPawn::SetupPlayerInputComponent(class UInputComponent* PlayerInpu
 
 	PlayerInputComponent->BindAction("Handbrake", IE_Pressed, this, &AZoomyZoomPawn::OnHandbrakePressed);
 	PlayerInputComponent->BindAction("Handbrake", IE_Released, this, &AZoomyZoomPawn::OnHandbrakeReleased);
+	PlayerInputComponent->BindAction("Boost", IE_Pressed, this, &AZoomyZoomPawn::BoostCar);
 	PlayerInputComponent->BindAction("SwitchCamera", IE_Pressed, this, &AZoomyZoomPawn::OnToggleCamera);
+	PlayerInputComponent->BindAction("Reset", IE_Pressed, this, &AZoomyZoomPawn::OnReset);
 
 	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &AZoomyZoomPawn::OnResetVR); 
 }
 
 void AZoomyZoomPawn::MoveForward(float Val)
 {
+	if (Val == -1.f) {
+		StopBoost();
+	}
 	GetVehicleMovementComponent()->SetThrottleInput(Val);
 }
 
@@ -155,6 +161,18 @@ void AZoomyZoomPawn::OnHandbrakePressed()
 void AZoomyZoomPawn::OnHandbrakeReleased()
 {
 	GetVehicleMovementComponent()->SetHandbrakeInput(false);
+}
+
+void AZoomyZoomPawn::OnReset() {
+	FVector location = GetActorLocation();
+	location.Z += 100;
+
+	FRotator rotation = GetActorRotation();
+	rotation.Pitch = 0;
+	rotation.Roll = 0;
+
+	SetActorLocation(location, false, (FHitResult *)nullptr, ETeleportType::TeleportPhysics);
+	SetActorRotation(rotation, ETeleportType::TeleportPhysics);
 }
 
 void AZoomyZoomPawn::OnToggleCamera()
@@ -216,6 +234,13 @@ void AZoomyZoomPawn::Tick(float Delta)
 			InternalCamera->RelativeRotation = HeadRotation;
 		}
 	}
+
+	if (isBoosting) {
+		boostAmount -= 1;
+		if (boostAmount <= 0) {
+			StopBoost();
+		}
+	}
 }
 
 void AZoomyZoomPawn::BeginPlay()
@@ -258,6 +283,23 @@ void AZoomyZoomPawn::UpdateHUDStrings()
 		int32 Gear = GetVehicleMovement()->GetCurrentGear();
 		GearDisplayString = (Gear == 0) ? LOCTEXT("N", "N") : FText::AsNumber(Gear);
 	}	
+}
+
+void AZoomyZoomPawn::BoostCar()
+{
+	if (!isBoosting && boostPickupAmount > 0) {
+		GetVehicleMovementComponent()->DragCoefficient /= 10.f;
+		boostPickupAmount--;
+		boostAmount = 250;
+		isBoosting = true;
+	}
+}
+
+void AZoomyZoomPawn::StopBoost() {
+	if (isBoosting) {
+		GetVehicleMovementComponent()->DragCoefficient *= 10.f;
+		isBoosting = false;
+	}
 }
 
 void AZoomyZoomPawn::SetupInCarHUD()

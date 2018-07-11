@@ -130,4 +130,18 @@ public:
 	FORCEINLINE UTextRenderComponent* GetInCarSpeed() const { return InCarSpeed; }
 	/** Returns InCarGear subobject **/
 	FORCEINLINE UTextRenderComponent* GetInCarGear() const { return InCarGear; }
+protected:
+	UFUNCTION(BlueprintCallable, Category = "Stats")
+		void BoostCar();
+	UFUNCTION(BlueprintCallable, Category = "Stats")
+		void StopBoost();
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+		int boostAmount;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+		bool isBoosting;
+	UFUNCTION(BlueprintCallable, Category = "Stats")
+		void OnReset();
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+		int boostPickupAmount;
 };
