@@ -47,12 +47,12 @@ void AZoomyZoomHud::DrawHUD()
 			Canvas->DrawItem(SpeedTextItem);
 
 			// DragCoefficent (testing)
-			FCanvasTextItem GearTextItem(FVector2D(HUDXRatio * 805.f, HUDYRatio * 500.f), FText::AsNumber(Vehicle->GetVehicleMovementComponent()->DragCoefficient), HUDFont, FLinearColor::White);
-			GearTextItem.Scale = ScaleVec;
-			Canvas->DrawItem(GearTextItem);
+			//FCanvasTextItem GearTextItem(FVector2D(HUDXRatio * 805.f, HUDYRatio * 500.f), FText::AsNumber(Vehicle->GetVehicleMovementComponent()->DragCoefficient), HUDFont, FLinearColor::White);
+			//GearTextItem.Scale = ScaleVec;
+			//Canvas->DrawItem(GearTextItem);
 
 			// BoostItemAmount
-			FCanvasTextItem BoostItem(FVector2D(HUDXRatio * 805.f, HUDYRatio * 545.f), FText::AsNumber(Vehicle->boostPickupAmount), HUDFont, FLinearColor::White);
+			FCanvasTextItem BoostItem(FVector2D(HUDXRatio * 805.f, HUDYRatio * 500.f), FText::AsNumber(Vehicle->boostPickupAmount), HUDFont, FLinearColor::White);
 			BoostItem.Scale = ScaleVec;
 			Canvas->DrawItem(BoostItem);
 		}
