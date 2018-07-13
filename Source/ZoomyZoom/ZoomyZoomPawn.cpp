@@ -116,7 +116,7 @@ AZoomyZoomPawn::AZoomyZoomPawn()
 	GearDisplayColor = FColor(255, 255, 255, 255);
 
 	bInReverseGear = false;
-	boostPickupAmount = 20;
+	boostPickupAmount = 1;
 }
 
 void AZoomyZoomPawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
